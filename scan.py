@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import json
 import subprocess
@@ -18,11 +16,12 @@ class Scanner():
             try:
                 self.devices = json.load(f)
             except json.JSONDecodeError:
-                print("DUPA")
-                devices_list = []
-                devices_list.append(subprocess.check_output('scanimage -f %d', shell=True).decode('ascii'))
-                self.devices = { str(i + 1) : devices_list[i] for i in range(0, len(devices_list)) }
-                json.dump(self.devices, f)
+                f.close()
+                with open('.devices.json', 'w+') as f:
+                    devices_list = []
+                    devices_list.append(subprocess.check_output('scanimage -f %d', shell=True).decode('ascii'))
+                    self.devices = { str(i + 1) : devices_list[i] for i in range(0, len(devices_list)) }
+                    json.dump(self.devices, f)
             f.close()
 
     def print_devices(self, *args, **kwargs):
